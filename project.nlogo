@@ -1,23 +1,24 @@
-breed [females female]
-breed [males male]
-females-own [pregnant?]
-males-own [gmo?]
-patches-own [pheromone water? eggs]
+;; females live 5x longer than males
 
-globals [diffusion-rate evaporation-rate]
+turtles-own [female? pregnant? gmo? ]
+patches-own [water? eggs sound-level]
+
+globals [total-eggs]
 
 to setup
   clear-all
-  create-females (population / 2)
-  create-males (population / 2)
-  
-  set diffusion-rate 0.1
-  set evaporation-rate 0.1
-  
+  set-default-shape turtles "butterfly"
+  set total-eggs 0
+  setup-patches
+  show total-eggs
+  reset-ticks
 end
 
 to setup-patches
-;  setup-nest
+  ask patches [
+    set water? false
+    set eggs 0
+  ]
   setup-water
   recolor-patches
 end
@@ -26,13 +27,19 @@ to setup-water
   ask patches [
   ;; setup food source one on the right
   if (distancexy (0.6 * max-pxcor) 0) < 5
-  [ set water? true ]
+  [ set water? true 
+    set eggs random 2
+    set total-eggs total-eggs + eggs]
   ;; setup food source two on the lower-left
   if (distancexy (-0.6 * max-pxcor) (-0.6 * max-pycor)) < 5
-  [ set water? true ]
+  [ set water? true 
+    set eggs random 2
+    set total-eggs total-eggs + eggs]
   ;; setup food source three on the upper-left
   if (distancexy (-0.8 * max-pxcor) (0.8 * max-pycor)) < 5
-  [ set water? true ]
+  [ set water? true 
+    set eggs random 2
+    set total-eggs total-eggs + eggs]
   ]
 end
 
@@ -47,82 +54,51 @@ end
   
 
 to go  ;; forever button
-  ;; add ants one at a time
-;  if count turtles < population [ create-ant ]
-
-;  ask turtles [ move recolor ]
-  diffuse pheromone (diffusion-rate / 100)
-  ask patches
-  [ set pheromone pheromone * (100 - evaporation-rate) / 100  ;; slowly evaporate pheromone
-    if pheromone < 0.05 [ set pheromone 0 ]
+;;  hatch eggs
+  ask patches with [water? = true and eggs > 0] [
+    sprout 1 [ 
+      set color blue
+      set female? one-of [ true false ]
+      if female? [ set color red ]
+      set pregnant? false
+      set gmo? false
+    ]
+    set eggs eggs - 1
   ]
+  
+  ask turtles [
+    let x min-one-of other turtles in-radius 3 [distance myself]
+    show x
+    rt flutter-amount 45
+    if not can-move? 1
+    [ maximize ]
+    fd 1
+  ]
+  
   recolor-patches
   tick
 end
 
-to move  ;; turtle procedure
-  if (not carrying-food?  [ look-for-food  ]     ;; if not carrying food, look for it
-  if carrying-food? [ move-towards-nest ]   ;; if carrying food head back to the nest
-  wander          ;; turn a small random amount and move forward
-end
-
-to create-ant
-  create-turtles 1
-  [ set size 2  ;; easier to see
-    set carrying-food? false ]
-end
-
-to move-towards-nest  ;; turtle procedure
-  ifelse nest?
-  [ ;; drop food and head out again
-    set carrying-food? false
-    rt 180 ]
-  [ set pheromone pheromone + 60  ;; drop some pheromone
-    ;; turn towards the nest, which is at the center
-    facexy 0 0 ]
-end
-
-to look-for-food  ;; turtle procedure
-  ifelse  food > 0
-  [ set carrying-food? true  ;; pick up food
-    set food food - 1        ;; and reduce the food source
-    rt 180                   ;; and turn around
-    stop ]
-  [ ;; go in the direction where the pheromone smell is strongest
-    uphill-pheromone ]
-end
-
-;; sniff left and right, and go where the strongest smell is
-to uphill-pheromone  ;; turtle procedure
-  ;; only turn if the current patch doesn't have much pheromone
-  if pheromone < 2 [
-    let scent-ahead pheromone-scent-at-angle   0
-    let scent-right pheromone-scent-at-angle  45
-    let scent-left  pheromone-scent-at-angle -45
-    if (scent-right > scent-ahead) or (scent-left > scent-ahead)
-    [ ifelse scent-right > scent-left
-      [ rt 45 ]
-      [ lt 45 ] ]
+to find-mate 
+  ask turtles [
+    let x min-one-of other turtles in-radius 3 [distance myself]
+    show x
   ]
 end
 
-to wander  ;; turtle procedure
-  rt random 40
-  lt random 40
-  if not can-move? 1 [ rt 180 ]
-  fd 1
+to maximize  ;; turtle procedure
+  face max-one-of patches in-radius 1 [sound-level]
 end
 
-to recolor  ;; turtle procedure
-  set color red
-  if carrying-food? [ set color orange + 1]
+to-report flutter-amount [limit]
+  ;; This routine takes a number as an input and returns a random value between
+  ;; (+1 * input value) and (-1 * input value).
+  ;; It is used to add a random flutter to the moth's movements
+  report random-float (2 * limit) - limit
 end
 
-to-report pheromone-scent-at-angle [angle]
-  let p patch-right-and-ahead angle 1
-  if p = nobody [ report 0 ]
-  report [pheromone] of p
-end
+
+
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
