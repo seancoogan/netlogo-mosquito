@@ -1,16 +1,28 @@
 ;; females live 5x longer than males
-
-turtles-own [female? pregnant? gmo? ]
+breed [females female]
+breed [males male]
+females-own [pregnant? preg-count target rest-count]
+males-own [gmo?]
+turtles-own [species life-time]
 patches-own [water? eggs sound-level]
 
-globals [total-eggs]
+;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Global variables ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;
+
+globals [total-eggs total-mated]
+
+;;;;;;;;;;;;;
+;;; Setup ;;;
+;;;;;;;;;;;;;
 
 to setup
   clear-all
   set-default-shape turtles "butterfly"
   set total-eggs 0
+  set total-mated 0
   setup-patches
-  show total-eggs
+  show word "total-eggs: " total-eggs
   reset-ticks
 end
 
@@ -43,47 +55,111 @@ to setup-water
   ]
 end
 
+
+
 to recolor-patches
   ask patches [
-  ;; scale color to show pheromone concentration
-  set pcolor scale-color green eggs 0.1 5
   ;; give color to nest and food sources
   if water? [ set pcolor cyan ]
   ]
 end
-  
+
+;0.3 + random-float 0.4 will give you 0.3 <= x < 0.7.
 
 to go  ;; forever button
 ;;  hatch eggs
   ask patches with [water? = true and eggs > 0] [
-    sprout 1 [ 
-      set color blue
-      set female? one-of [ true false ]
-      if female? [ set color red ]
-      set pregnant? false
-      set gmo? false
+    ifelse one-of [ true false ] [
+      sprout-females 1 [ 
+        set color pink
+        set species random 7
+        set life-time random 50
+        ;;female specific variables
+        set pregnant? false
+        set preg-count 3
+      ]
     ]
+    [
+      sprout-males 1 [
+        set color blue
+        set species random 7
+        set life-time random 10
+        ;; male specific variables
+        set gmo? false
+      ]
+    ]
+  
     set eggs eggs - 1
   ]
   
-  ask turtles [
-    let x min-one-of other turtles in-radius 3 [distance myself]
-    show x
-    rt flutter-amount 45
-    if not can-move? 1
-    [ maximize ]
-    fd 1
+  ask females [
+    if color = pink [
+      let mate min-one-of males in-radius 3 [distance myself]
+      if mate != nobody [
+        if ([species] of mate = [species] of self) and (preg-count > 0) [
+          fertilize 
+        ]
+      ]
+    ]
+    if color = green [
+      find-water
+      ifelse target != nobody 
+      [ 
+        ifelse patch-here = target [
+          if rest-count <= 0 [
+            lay-eggs
+          ]
+        ] 
+        [ face target
+          forward 1 ] 
+      ]
+      [ mingle ]
+      set rest-count rest-count - 1
+    ]
+  ]
+   
+  ask turtles [ 
+    if color != green [
+      mingle
+    ]
+    
+    set life-time life-time - 1
+    if life-time < 0 [ die]
   ]
   
-  recolor-patches
+
+
+  show word "total-mated: " total-mated
+  
   tick
 end
 
-to find-mate 
-  ask turtles [
-    let x min-one-of other turtles in-radius 3 [distance myself]
-    show x
-  ]
+
+to fertilize 
+  set total-mated total-mated + 1
+  
+  set pregnant? true
+  set color green
+  set preg-count preg-count - 1
+end
+
+to find-water
+  let targets (patches in-cone 10 180 ) with [pcolor = cyan] 
+  set target min-one-of targets [ distance myself ] 
+end
+
+to lay-eggs 
+  set eggs eggs + 300
+  set pregnant? false
+  set color pink
+end
+
+to mingle 
+  right flutter-amount 45
+  left flutter-amount 45
+  if not can-move? 1
+    [ maximize ]
+  fd 1
 end
 
 to maximize  ;; turtle procedure
@@ -96,9 +172,6 @@ to-report flutter-amount [limit]
   ;; It is used to add a random flutter to the moth's movements
   report random-float (2 * limit) - limit
 end
-
-
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
@@ -151,7 +224,7 @@ BUTTON
 139
 Go
 go
-NIL
+T
 1
 T
 OBSERVER
@@ -160,21 +233,6 @@ NIL
 NIL
 NIL
 1
-
-SLIDER
-44
-162
-216
-195
-population
-population
-0
-100
-50
-1
-1
-NIL
-HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
