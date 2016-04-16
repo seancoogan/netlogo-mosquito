@@ -1,10 +1,10 @@
 ;; females live 5x longer than males
-breed [females female]
-breed [males male]
-females-own [pregnant? preg-count target rest-count]
-males-own [gmo?]
-turtles-own [compatibility life-time]
-patches-own [water? eggs]
+breed [ females female ]
+breed [ males male ]
+breed [ deployments deployment ]
+females-own [ compatibility life-time pregnant? preg-count target rest-count ]
+males-own [ compatibility life-time gmo? ]
+patches-own [ water? eggs ]
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Global variables ;;;
@@ -18,11 +18,26 @@ globals [total-eggs total-mated]
 
 to setup
   clear-all
-  set-default-shape turtles "butterfly"
+  set-default-shapes
   set total-eggs 0
   set total-mated 0
   setup-patches
+  setup-deployments
   reset-ticks
+end
+
+to set-default-shapes
+  set-default-shape females "butterfly"
+  set-default-shape males "butterfly"
+  set-default-shape deployments "box"
+end
+
+to setup-deployments
+  ask n-of num-deployments patches [  ;; from interface
+    sprout-deployments 1 [
+      set color red
+    ]
+  ] 
 end
 
 to setup-patches
@@ -63,25 +78,34 @@ end
 
 to go  ;; forever button
   
+  gmo-release-location
+  
   hatch-eggs
   
   if release-gmo [
-    ask patch (0.6 * max-pxcor) 0 [ release-gmo-males ]
-    ask patch (-0.6 * max-pxcor) (-0.6 * max-pycor) [ release-gmo-males ]
-    ask patch (-0.8 * max-pxcor) (0.8 * max-pycor) [ release-gmo-males ]
+    ask deployments [
+      ask patch-here [ release-gmo-males ]
+    ]
   ]
   
   ask females [ find-mate ]
   
-  ask turtles [ 
+  ask females [
     ;; if not pregnant, continue looking for mate 
-    if (color != violet) and (color != green) [ mingle ]
-    
-    set life-time life-time - 1 ;; decrement life
-    if life-time < 0 [ die] ;; if life expired, die
+    if not pregnant? [ mingle ]
+    advance-life
+  ]
+  ask males [
+    mingle
+    advance-life
   ]
   
   tick ;; advance ticks
+end
+
+to advance-life 
+  set life-time life-time - 1 ;; decrement life
+  if life-time < 0 [ die] ;; if life expired, die
 end
 
 to hatch-eggs
@@ -150,7 +174,7 @@ to fertilize [gmo-flag?]
   set total-mated total-mated + 1
   
   set pregnant? true
-  set rest-count 3
+  set rest-count 5
   set preg-count preg-count - 1
   ifelse gmo-flag? [
     set color green
@@ -188,6 +212,25 @@ to-report flutter-amount [limit]
   ;; It is used to add a random flutter to the moth's movements
   report random-float (2 * limit) - limit
 end
+
+to gmo-release-location
+  if mouse-down? [
+    let candidate min-one-of deployments [distancexy mouse-xcor mouse-ycor]
+    if [distancexy mouse-xcor mouse-ycor] of candidate < 1 [
+      ;; The WATCH primitive puts a "halo" around the watched turtle.
+      watch candidate
+      while [mouse-down?] [
+        ;; If we don't force the view to update, the user won't
+        ;; be able to see the turtle moving around.
+        display
+        ;; The SUBJECT primitive reports the turtle being watched.
+        ask subject [ setxy mouse-xcor mouse-ycor ]
+      ]
+      ;; Undoes the effects of WATCH.  Can be abbreviated RP.
+      reset-perspective
+    ]
+  ]
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
@@ -219,9 +262,9 @@ ticks
 BUTTON
 28
 24
-94
+98
 57
-Setup
+SETUP
 setup
 NIL
 1
@@ -238,7 +281,7 @@ BUTTON
 24
 172
 57
-Go
+GO
 go
 T
 1
@@ -282,6 +325,31 @@ count turtles
 17
 1
 11
+
+SLIDER
+17
+109
+189
+142
+num-deployments
+num-deployments
+0
+10
+9
+1
+1
+NIL
+HORIZONTAL
+
+TEXTBOX
+35
+312
+185
+354
+SETUP and GO\nselect and drag red boxes to deployment location
+11
+0.0
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
