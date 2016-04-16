@@ -1,11 +1,10 @@
 ;; females live 5x longer than males
-;0.3 + random-float 0.4 will give you 0.3 <= x < 0.7.
 breed [females female]
 breed [males male]
 females-own [pregnant? preg-count target rest-count]
 males-own [gmo?]
-turtles-own [species life-time]
-patches-own [water? eggs sound-level]
+turtles-own [compatibility life-time]
+patches-own [water? eggs]
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Global variables ;;;
@@ -23,7 +22,6 @@ to setup
   set total-eggs 0
   set total-mated 0
   setup-patches
-  show word "total-eggs: " total-eggs
   reset-ticks
 end
 
@@ -38,69 +36,85 @@ end
 
 to setup-water
   ask patches [
-  ;; setup food source one on the right
-  if (distancexy (0.6 * max-pxcor) 0) < 5
-  [ set water? true 
-    set eggs random 2
-    set total-eggs total-eggs + eggs]
-  ;; setup food source two on the lower-left
-  if (distancexy (-0.6 * max-pxcor) (-0.6 * max-pycor)) < 5
-  [ set water? true 
-    set eggs random 2
-    set total-eggs total-eggs + eggs]
-  ;; setup food source three on the upper-left
-  if (distancexy (-0.8 * max-pxcor) (0.8 * max-pycor)) < 5
-  [ set water? true 
-    set eggs random 2
-    set total-eggs total-eggs + eggs]
+    ;; setup water source one on the right
+    if (distancexy (0.6 * max-pxcor) 0) < 2
+    [ setup-water-patch ]
+    ;; setup water source two on the lower-left
+    if (distancexy (-0.6 * max-pxcor) (-0.6 * max-pycor)) < 2
+    [ setup-water-patch ]
+    ;; setup water source three on the upper-left
+    if (distancexy (-0.8 * max-pxcor) (0.8 * max-pycor)) < 2
+    [ setup-water-patch ]
   ]
+end
+
+to setup-water-patch 
+  set water? true 
+  set eggs random 5
+  set total-eggs total-eggs + eggs
 end
 
 to recolor-patches
   ask patches [
-  ;; give color to nest and food sources
-  if water? [ set pcolor cyan ]
+    if water? [ set pcolor cyan ]
   ]
 end
 
 
 to go  ;; forever button
-;;  hatch eggs
-  ask patches with [water? = true and eggs > 0] [
+  
+  hatch-eggs
+  
+  if release-gmo [
+    ask patch (0.6 * max-pxcor) 0 [ release-gmo-males ]
+    ask patch (-0.6 * max-pxcor) (-0.6 * max-pycor) [ release-gmo-males ]
+    ask patch (-0.8 * max-pxcor) (0.8 * max-pycor) [ release-gmo-males ]
+  ]
+  
+  ask females [ find-mate ]
+  
+  ask turtles [ 
+    ;; if not pregnant, continue looking for mate 
+    if (color != violet) and (color != green) [ mingle ]
+    
+    set life-time life-time - 1 ;; decrement life
+    if life-time < 0 [ die] ;; if life expired, die
+  ]
+  
+  tick ;; advance ticks
+end
+
+to hatch-eggs
+    ask patches with [ water? = true and eggs > 0 ] [
     ifelse one-of [ true false ] [
       sprout-females 1 [ 
         set color pink
-        set species random 7
+        set compatibility random 10
         set life-time (3 + random 7) * (2 + random 3)
         ;;female specific variables
         set pregnant? false
-        set preg-count 3
+        set preg-count 1 + random 3
       ]
     ]
-    [
-      sprout-males 1 [
-        set color blue
-        set species random 7
-        set life-time 3 + random 7
-        ;; male specific variables
-        set gmo? false
-      ]
+    [ sprout-males 1 [
+      set color blue
+      set compatibility random 10
+      set life-time 3 + random 7
+      ;; male specific variables
+      set gmo? false
     ]
-  
+    ]
+    
     set eggs eggs - 1
+    set total-eggs total-eggs - 1
   ]
-  
-  if release-gmo [
-    ask patch (0.6 * max-pxcor) 0 [release-gmo-males]
-    ask patch (-0.6 * max-pxcor) (-0.6 * max-pycor) [release-gmo-males]
-    ask patch (-0.8 * max-pxcor) (0.8 * max-pycor) [release-gmo-males]
-  ]
+end
 
-  ask females [
-    if color = pink [
+to find-mate
+      if color = pink [
       let mate min-one-of males in-radius 3 [distance myself]
       if mate != nobody [
-        if ([species] of mate = [species] of self) and (preg-count > 0) [
+        if ([compatibility] of mate = [compatibility] of self) and (preg-count > 0) [
           fertilize [gmo?] of mate
         ]
       ]
@@ -109,40 +123,23 @@ to go  ;; forever button
       find-water
       ifelse target = nobody [
         mingle]
-      [
-        ifelse patch-here = target [
-          if rest-count <= 0 [
-            lay-eggs
-          ]
-        ] 
-        [ face target
-          forward 1 ] 
-        
+      [ ifelse patch-here = target [
+        if rest-count <= 0 [
+          lay-eggs
+        ]
+      ] 
+      [ face target
+        forward 1 ] 
       ]
+      
       set rest-count rest-count - 1
     ]
-  ]
-   
-  ask turtles [ 
-    if (color != violet) and (color != green) [
-      mingle
-    ]
-    
-    set life-time life-time - 1
-    if life-time < 0 [ die]
-  ]
-  
-
-
-  show word "total-mated: " total-mated
-  
-  tick
 end
 
 to release-gmo-males
   sprout-males 100 [
     set color red 
-    set species random 7
+    set compatibility random 10
     set life-time random 10
     ;; male specific variables
     set gmo? true
@@ -156,7 +153,9 @@ to fertilize [gmo-flag?]
   set rest-count 3
   set preg-count preg-count - 1
   ifelse gmo-flag? [
-    set color green ]
+    set color green
+    set preg-count 0 
+  ]
   [set color violet]
   
 end
@@ -167,8 +166,11 @@ to find-water
 end
 
 to lay-eggs 
-  if color = violet
-  [set eggs eggs + 100 + random 200]
+  if color = violet [
+    let new-eggs random 300
+    set eggs eggs + new-eggs
+    set total-eggs total-eggs + new-eggs
+  ]
   set pregnant? false
   set color pink
   set rest-count 0
@@ -177,13 +179,7 @@ end
 to mingle 
   right flutter-amount 45
   left flutter-amount 45
-  if not can-move? 1
-    [ maximize ]
   fd 1
-end
-
-to maximize  ;; turtle procedure
-  face max-one-of patches in-radius 1 [sound-level]
 end
 
 to-report flutter-amount [limit]
@@ -221,10 +217,10 @@ ticks
 30.0
 
 BUTTON
-31
-53
-97
-86
+28
+24
+94
+57
 Setup
 setup
 NIL
@@ -238,10 +234,10 @@ NIL
 1
 
 BUTTON
-47
-106
-110
-139
+109
+24
+172
+57
 Go
 go
 T
@@ -255,15 +251,37 @@ NIL
 1
 
 SWITCH
-59
-200
-194
-233
+38
+65
+173
+98
 release-gmo
 release-gmo
-0
+1
 1
 -1000
+
+MONITOR
+67
+158
+145
+203
+NIL
+total-eggs
+17
+1
+11
+
+MONITOR
+65
+232
+158
+277
+NIL
+count turtles
+17
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
