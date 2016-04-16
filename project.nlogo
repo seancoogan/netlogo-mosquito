@@ -1,4 +1,5 @@
 ;; females live 5x longer than males
+;0.3 + random-float 0.4 will give you 0.3 <= x < 0.7.
 breed [females female]
 breed [males male]
 females-own [pregnant? preg-count target rest-count]
@@ -55,8 +56,6 @@ to setup-water
   ]
 end
 
-
-
 to recolor-patches
   ask patches [
   ;; give color to nest and food sources
@@ -64,7 +63,6 @@ to recolor-patches
   ]
 end
 
-;0.3 + random-float 0.4 will give you 0.3 <= x < 0.7.
 
 to go  ;; forever button
 ;;  hatch eggs
@@ -73,7 +71,7 @@ to go  ;; forever button
       sprout-females 1 [ 
         set color pink
         set species random 7
-        set life-time random 50
+        set life-time (3 + random 7) * (2 + random 3)
         ;;female specific variables
         set pregnant? false
         set preg-count 3
@@ -83,7 +81,7 @@ to go  ;; forever button
       sprout-males 1 [
         set color blue
         set species random 7
-        set life-time random 10
+        set life-time 3 + random 7
         ;; male specific variables
         set gmo? false
       ]
@@ -92,19 +90,26 @@ to go  ;; forever button
     set eggs eggs - 1
   ]
   
+  if release-gmo [
+    ask patch (0.6 * max-pxcor) 0 [release-gmo-males]
+    ask patch (-0.6 * max-pxcor) (-0.6 * max-pycor) [release-gmo-males]
+    ask patch (-0.8 * max-pxcor) (0.8 * max-pycor) [release-gmo-males]
+  ]
+
   ask females [
     if color = pink [
       let mate min-one-of males in-radius 3 [distance myself]
       if mate != nobody [
         if ([species] of mate = [species] of self) and (preg-count > 0) [
-          fertilize 
+          fertilize [gmo?] of mate
         ]
       ]
     ]
-    if color = green [
+    if pregnant? [  
       find-water
-      ifelse target != nobody 
-      [ 
+      ifelse target = nobody [
+        mingle]
+      [
         ifelse patch-here = target [
           if rest-count <= 0 [
             lay-eggs
@@ -112,14 +117,14 @@ to go  ;; forever button
         ] 
         [ face target
           forward 1 ] 
+        
       ]
-      [ mingle ]
       set rest-count rest-count - 1
     ]
   ]
    
   ask turtles [ 
-    if color != green [
+    if (color != violet) and (color != green) [
       mingle
     ]
     
@@ -134,13 +139,26 @@ to go  ;; forever button
   tick
 end
 
+to release-gmo-males
+  sprout-males 100 [
+    set color red 
+    set species random 7
+    set life-time random 10
+    ;; male specific variables
+    set gmo? true
+  ]
+end
 
-to fertilize 
+to fertilize [gmo-flag?] 
   set total-mated total-mated + 1
   
   set pregnant? true
-  set color green
+  set rest-count 3
   set preg-count preg-count - 1
+  ifelse gmo-flag? [
+    set color green ]
+  [set color violet]
+  
 end
 
 to find-water
@@ -149,9 +167,11 @@ to find-water
 end
 
 to lay-eggs 
-  set eggs eggs + 300
+  if color = violet
+  [set eggs eggs + 100 + random 200]
   set pregnant? false
   set color pink
+  set rest-count 0
 end
 
 to mingle 
@@ -233,6 +253,17 @@ NIL
 NIL
 NIL
 1
+
+SWITCH
+59
+200
+194
+233
+release-gmo
+release-gmo
+0
+1
+-1000
 
 @#$#@#$#@
 ## WHAT IS IT?
