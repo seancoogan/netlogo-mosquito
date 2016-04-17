@@ -3,13 +3,13 @@ breed [ males male ]
 breed [ deployments deployment ]
 females-own [ compatibility life-time pregnant? preg-count target rest-count ]
 males-own [ compatibility life-time gmo? ]
-patches-own [ water? eggs ]
+patches-own [ water? eggs gmo-eggs ]
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Global variables ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
-globals [total-eggs total-mated]
+globals [total-wild-eggs total-gmo-eggs total-mated]
 
 ;;;;;;;;;;;;;
 ;;; Setup ;;;
@@ -18,7 +18,8 @@ globals [total-eggs total-mated]
 to setup
   clear-all
   set-default-shapes
-  set total-eggs 0
+  set total-wild-eggs 0
+  set total-gmo-eggs 0
   set total-mated 0
   setup-patches
   setup-deployments
@@ -65,7 +66,7 @@ end
 to setup-water-patch 
   set water? true 
   set eggs random 5
-  set total-eggs total-eggs + eggs
+  set total-wild-eggs total-wild-eggs + eggs
 end
 
 to recolor-patches
@@ -108,7 +109,34 @@ to advance-life
 end
 
 to hatch-eggs
-    ask patches with [ water? = true and eggs > 0 ] [
+  ask patches with [ water? = true and (eggs > 0 or gmo-eggs > 0) ] [
+    
+    ifelse (eggs > 0 and gmo-eggs > 0) [
+      ifelse one-of [ true false ] [
+        ;; hatch wild eggs
+        hatch-wild-egg
+      ]
+      [
+        ;; hatch gmo eggs
+        hatch-gmo-egg
+      ]
+    ]
+    [ 
+      ifelse eggs > 0 [
+        ;; hatch wild eggs 
+        hatch-wild-egg
+      ]
+      [
+        ;; hatch gmo eggs 
+        hatch-gmo-egg
+      ]
+    ]
+  ]
+end
+
+
+to hatch-wild-egg     
+  if random 101 <= wild-survival-rate [    
     ifelse one-of [ true false ] [
       sprout-females 1 [ 
         set color pink
@@ -127,36 +155,51 @@ to hatch-eggs
       set gmo? false
     ]
     ]
-    
-    set eggs eggs - 1
-    set total-eggs total-eggs - 1
   ]
+  set eggs eggs - 1
+  set total-wild-eggs total-wild-eggs - 1
+end
+
+to hatch-gmo-egg         
+  if random 101 <= gmo-survival-rate [
+    
+    sprout-males 1 [
+      set color red
+      set compatibility random 10
+      set life-time 3 + random 7
+      ;; male specific variables
+      set gmo? true
+      
+    ]
+  ]
+  set gmo-eggs gmo-eggs - 1
+  set total-gmo-eggs total-gmo-eggs - 1
 end
 
 to find-mate
-      if color = pink [
-      let mate min-one-of males in-radius 3 [distance myself]
-      if mate != nobody [
-        if ([compatibility] of mate = [compatibility] of self) and (preg-count > 0) [
-          fertilize [gmo?] of mate
-        ]
+  if color = pink [
+    let mate min-one-of males in-radius 3 [distance myself]
+    if mate != nobody [
+      if ([compatibility] of mate = [compatibility] of self) and (preg-count > 0) [
+        fertilize [gmo?] of mate
       ]
     ]
-    if pregnant? [  
-      find-water
-      ifelse target = nobody [
-        mingle]
-      [ ifelse patch-here = target [
-        if rest-count <= 0 [
-          lay-eggs
-        ]
-      ] 
-      [ face target
-        forward 1 ] 
+  ]
+  if pregnant? [  
+    find-water
+    ifelse target = nobody [
+      mingle]
+    [ ifelse patch-here = target [
+      if rest-count <= 0 [
+        lay-eggs
       ]
-      
-      set rest-count rest-count - 1
+    ] 
+    [ face target
+      forward 1 ] 
     ]
+    
+    set rest-count rest-count - 1
+  ]
 end
 
 to release-gmo-males
@@ -192,7 +235,12 @@ to lay-eggs
   if color = violet [
     let new-eggs random 300
     set eggs eggs + new-eggs
-    set total-eggs total-eggs + new-eggs
+    set total-wild-eggs total-wild-eggs + new-eggs
+  ]
+  if color = green [
+    let new-gmo-eggs random 300
+    set gmo-eggs gmo-eggs + new-gmo-eggs
+    set total-gmo-eggs total-gmo-eggs + new-gmo-eggs
   ]
   set pregnant? false
   set color pink
@@ -260,9 +308,9 @@ ticks
 
 BUTTON
 28
-24
+112
 98
-57
+145
 SETUP
 setup
 NIL
@@ -277,12 +325,12 @@ NIL
 
 BUTTON
 109
-24
+112
 172
-57
+145
 GO
 go
-T
+NIL
 1
 T
 OBSERVER
@@ -293,43 +341,43 @@ NIL
 1
 
 SWITCH
-38
-65
-173
-98
+11
+240
+146
+273
 release-gmo
 release-gmo
-1
+0
 1
 -1000
 
 MONITOR
-67
-158
-145
-203
-NIL
-total-eggs
+12
+282
+97
+327
+Wild Eggs
+total-wild-eggs
 17
 1
 11
 
 MONITOR
-65
-232
-158
-277
-NIL
-count turtles
+105
+337
+190
+382
+GMO Infected
+count males with [color = red] + count females with [color = green]
 17
 1
 11
 
 SLIDER
-17
-109
-189
-142
+14
+72
+186
+105
 num-deployments
 num-deployments
 0
@@ -341,14 +389,66 @@ NIL
 HORIZONTAL
 
 TEXTBOX
-35
-312
-185
-354
-SETUP and GO\nselect and drag red boxes to deployment location
+31
+10
+181
+66
+Set Number of Deployments then SETUP and GO,\nClick and drag red boxes to move deployment location.\n
 11
 0.0
 1
+
+SLIDER
+10
+156
+188
+189
+wild-survival-rate
+wild-survival-rate
+0
+100
+20
+1
+1
+%
+HORIZONTAL
+
+SLIDER
+10
+198
+189
+231
+gmo-survival-rate
+gmo-survival-rate
+0
+100
+80
+1
+1
+%
+HORIZONTAL
+
+MONITOR
+105
+282
+189
+327
+GMO Eggs
+total-gmo-eggs
+17
+1
+11
+
+MONITOR
+12
+336
+97
+381
+Uninfected
+count males with [color = blue]\n+ count females with [color = pink]\n+ count females with [color = violet]
+17
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
