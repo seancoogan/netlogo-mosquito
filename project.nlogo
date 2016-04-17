@@ -65,7 +65,7 @@ end
 
 to setup-water-patch 
   set water? true 
-  set eggs random 5
+  set eggs random 50
   set total-wild-eggs total-wild-eggs + eggs
 end
 
@@ -86,12 +86,6 @@ to go  ;; forever button
   gmo-release-location
   
   hatch-eggs
-  
-;  if release-gmo [
-;    ask deployments [
-;      ask patch-here [ release-gmo-males ]
-;    ]
-;  ]
   
   ask females [ find-mate ]
   
