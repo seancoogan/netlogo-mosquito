@@ -1,4 +1,3 @@
-;; females live 5x longer than males
 breed [ females female ]
 breed [ males male ]
 breed [ deployments deployment ]
@@ -209,7 +208,7 @@ end
 to-report flutter-amount [limit]
   ;; This routine takes a number as an input and returns a random value between
   ;; (+1 * input value) and (-1 * input value).
-  ;; It is used to add a random flutter to the moth's movements
+  ;; It is used to add a random flutter to the mosquito's movements
   report random-float (2 * limit) - limit
 end
 
