@@ -33,7 +33,7 @@ to set-default-shapes
 end
 
 to setup-deployments
-  ask n-of num-deployments patches [  ;; from interface
+  ask n-of initial-release-locations patches [  ;; from interface
     sprout-deployments 1 [
       set color red
     ]
@@ -75,18 +75,23 @@ to recolor-patches
   ]
 end
 
-
+to deploy-gmo
+  ask deployments [
+    ask patch-here [ release-gmo-males gmo-release-per-deployment ]
+  ]
+end
+  
 to go  ;; forever button
   
   gmo-release-location
   
   hatch-eggs
   
-  if release-gmo [
-    ask deployments [
-      ask patch-here [ release-gmo-males ]
-    ]
-  ]
+;  if release-gmo [
+;    ask deployments [
+;      ask patch-here [ release-gmo-males ]
+;    ]
+;  ]
   
   ask females [ find-mate ]
   
@@ -202,8 +207,8 @@ to find-mate
   ]
 end
 
-to release-gmo-males
-  sprout-males 100 [
+to release-gmo-males [ num ]
+  sprout-males num [
     set color red 
     set compatibility random 10
     set life-time random 10
@@ -280,9 +285,9 @@ to gmo-release-location
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-213
+227
 10
-756
+770
 574
 20
 20
@@ -307,9 +312,9 @@ ticks
 30.0
 
 BUTTON
-28
+12
 112
-98
+82
 145
 SETUP
 setup
@@ -324,9 +329,9 @@ NIL
 1
 
 BUTTON
-109
+91
 112
-172
+154
 145
 GO
 go
@@ -340,22 +345,11 @@ NIL
 NIL
 1
 
-SWITCH
-11
-240
-146
-273
-release-gmo
-release-gmo
-1
-1
--1000
-
 MONITOR
-12
-282
-97
-327
+13
+325
+98
+370
 Wild Eggs
 total-wild-eggs
 17
@@ -363,10 +357,10 @@ total-wild-eggs
 11
 
 MONITOR
-105
-337
-190
-382
+106
+380
+191
+425
 GMO Infected
 count males with [color = red] + count females with [color = green]
 17
@@ -374,15 +368,15 @@ count males with [color = red] + count females with [color = green]
 11
 
 SLIDER
-14
+12
 72
-186
+187
 105
-num-deployments
-num-deployments
+initial-release-locations
+initial-release-locations
 0
 10
-9
+6
 1
 1
 NIL
@@ -399,10 +393,10 @@ Set Number of Deployments then SETUP and GO,\nClick and drag red boxes to move d
 1
 
 SLIDER
-10
-156
-188
-189
+13
+239
+191
+272
 wild-survival-rate
 wild-survival-rate
 0
@@ -414,25 +408,25 @@ wild-survival-rate
 HORIZONTAL
 
 SLIDER
-10
-198
-189
-231
+13
+281
+192
+314
 gmo-survival-rate
 gmo-survival-rate
 0
 100
-80
+40
 1
 1
 %
 HORIZONTAL
 
 MONITOR
-105
-282
-189
-327
+106
+325
+190
+370
 GMO Eggs
 total-gmo-eggs
 17
@@ -440,10 +434,10 @@ total-gmo-eggs
 11
 
 MONITOR
-12
-336
-97
-381
+13
+379
+98
+424
 Uninfected
 count males with [color = blue]\n+ count females with [color = pink]\n+ count females with [color = violet]
 17
@@ -451,9 +445,9 @@ count males with [color = blue]\n+ count females with [color = pink]\n+ count fe
 11
 
 PLOT
-764
+782
 11
-964
+982
 161
 Eggs
 NIL
@@ -470,10 +464,10 @@ PENS
 "GMO" 1.0 0 -2674135 true "" "plot total-gmo-eggs"
 
 PLOT
-764
-174
-964
-324
+782
+175
+982
+325
 Mosquitoes
 NIL
 NIL
@@ -487,6 +481,38 @@ false
 PENS
 "Wild" 1.0 0 -13345367 true "" "plot count males with [color = blue] + count females with [color = pink] + count females with [color = violet]"
 "GMO" 1.0 0 -2674135 true "" "plot count males with [color = red] + count females with [color = green]"
+
+SLIDER
+13
+157
+222
+190
+gmo-release-per-deployment
+gmo-release-per-deployment
+10
+100
+50
+10
+1
+NIL
+HORIZONTAL
+
+BUTTON
+13
+196
+124
+229
+Release GMO
+deploy-gmo
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
