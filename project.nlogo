@@ -280,9 +280,9 @@ to gmo-release-location
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-210
+213
 10
-753
+756
 574
 20
 20
@@ -330,7 +330,7 @@ BUTTON
 145
 GO
 go
-NIL
+T
 1
 T
 OBSERVER
@@ -347,7 +347,7 @@ SWITCH
 273
 release-gmo
 release-gmo
-0
+1
 1
 -1000
 
@@ -449,6 +449,44 @@ count males with [color = blue]\n+ count females with [color = pink]\n+ count fe
 17
 1
 11
+
+PLOT
+764
+11
+964
+161
+Eggs
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"Wild" 1.0 0 -13345367 true "" "plot total-wild-eggs"
+"GMO" 1.0 0 -2674135 true "" "plot total-gmo-eggs"
+
+PLOT
+764
+174
+964
+324
+Mosquitoes
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"Wild" 1.0 0 -13345367 true "" "plot count males with [color = blue] + count females with [color = pink] + count females with [color = violet]"
+"GMO" 1.0 0 -2674135 true "" "plot count males with [color = red] + count females with [color = green]"
 
 @#$#@#$#@
 ## WHAT IS IT?
