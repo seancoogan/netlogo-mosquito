@@ -510,11 +510,15 @@ NIL
 
 @#$#@#$#@
 
+
 ## WHAT IS IT?
 
 (a general understanding of what the model is trying to show or explain)
-* Show how introduction of genetically modified mosquitoes can reduce desease carrying mosquiteos in the wild. 
-* Health officials need to find the optimal locations for realeasing the GMO mosquiteos
+•	Show how introduction of genetically modified mosquitoes can reduce desease carrying mosquiteos in the wild. 
+•	Health officials need to find the optimal locations for realeasing the GMO mosquiteos
+•	Genetic change is passed down to offspring 
+•	Once a non GMO female is impregnated she will remain infected with the genetic modification. Therefore, subsequient pregnancies will produce GMO eggs regardless if the male is GMO
+•	Genetic females do not survive, therefore only males are reproduced when a GMO male fertilizes and  
 
 ## HOW IT WORKS
 
@@ -528,7 +532,17 @@ NIL
 ## HOW TO USE IT
 
 (how to use the model, including a description of each of the items in the Interface tab)
-* 
+•	Set the initial-release-locations 
+•	Setup
+•	Go
+•	Position the release locations for the genetically modified mosquitoes by dragging each red box using the mouse in the environment 
+•	Set the gmo-release-per-deployment
+•	Once release is setup, press the Release GMO button. This can be pressed any number of times. Each press will release the set number of GMO mosquitoes from the current locations. Locations can be changed through out the simulation run
+•	Survival rate of wild (non GMO) mosquitoes
+•	Survival rate of GMO mosquitoes
+•	counters
+•	plots 
+•	
 
 ## THINGS TO NOTICE
 
@@ -549,10 +563,14 @@ NIL
 ## RELATED MODELS
 
 (models in the NetLogo Models Library and elsewhere which are of related interest)
+moths - flutter
+line of sight - 
+mouse drag one model – mouse interface interaction
 
 ## CREDITS AND REFERENCES
 
 (a reference to the model's URL on the web if it has one, as well as any other necessary credits, citations, and links)
+https://github.com/seancoogan/netlogo-mosquito
 @#$#@#$#@
 default
 true
