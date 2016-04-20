@@ -509,17 +509,26 @@ NIL
 1
 
 @#$#@#$#@
+
 ## WHAT IS IT?
 
 (a general understanding of what the model is trying to show or explain)
+* Show how introduction of genetically modified mosquitoes can reduce desease carrying mosquiteos in the wild. 
+* Health officials need to find the optimal locations for realeasing the GMO mosquiteos
 
 ## HOW IT WORKS
 
 (what rules the agents use to create the overall behavior of the model)
+* Mosquitoes hatch from eggs in bodies of water 
+* Once hatched, they attempt to mate
+* successful mating requires a an non pregnant, fertile female and a male with in a radius of 3 units of the female. 
+* There is a compatibility variable (0-9) that must match for the female and male to mate successfully. This represents the variable frequency used for mosquitoes to find a mate. 
+
 
 ## HOW TO USE IT
 
 (how to use the model, including a description of each of the items in the Interface tab)
+* 
 
 ## THINGS TO NOTICE
 
