@@ -32,7 +32,7 @@ males-own [
 patches-own [ 
   water?                              ;; Flag to track if patch represents water (boolean)
   wild-eggs                           ;; Counter for number of wild eggs on a patch (integer)
-  gmo-eggs                            ;; Counter for number of gmo eggs on a patch (integer)
+  gmo-eggs                            ;; Counter for number of GMO eggs on a patch (integer)
 ]
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
@@ -40,8 +40,8 @@ patches-own [
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
 globals [
-  total-wild-eggs                     ;; Counter for wild eggs layed (integer)
-  total-gmo-eggs                      ;; Counter for gmo eggs layed (integer)
+  total-wild-eggs                     ;; Counter for wild eggs laid (integer)
+  total-gmo-eggs                      ;; Counter for GMO eggs laid (integer)
 ]
 
 ;;;;;;;;;;;;;
@@ -52,11 +52,11 @@ to setup                              ;; Observer procedure
   clear-all                           ;; Initialize environment by clearing all agents   
   reset-ticks                         ;; Reset tick count to 0
   set total-wild-eggs 0               ;; Initialize global total wild eggs counter to 0
-  set total-gmo-eggs 0                ;; Initialize global total gmo eggs counter to 0
+  set total-gmo-eggs 0                ;; Initialize global total GMO eggs counter to 0
   
   set-default-shapes                  ;; Apply default shapes to turtle breeds
   setup-patches                       ;; Setup initial patches 
-  setup-deployments                   ;; Setup initial gmo release locations 
+  setup-deployments                   ;; Setup initial GMO release locations 
 end
 
 to set-default-shapes                 ;; Turtle procedure
@@ -151,7 +151,7 @@ end
 to release-gmo-males [ num ]          ;; Patch procedure
   ;; Create n-number of GMO male mosquitoes, where n is the parameter num
   sprout-males num [
-    sprout-gmo-male                   ;; Call sub procedure to create a gmo male
+    sprout-gmo-male                   ;; Call sub procedure to create a GMO male
   ]
 end
 
@@ -176,9 +176,9 @@ to gmo-release-location               ;; Deployment breed turtle procedure
 end
 
 to hatch-eggs                         ;; Patch procedure
-  ;; This procedure hatches an egg on each water patch wher an egg exists  
+  ;; This procedure hatches an egg on each water patch where an egg exists  
   ask patches with [ water? = true and (wild-eggs > 0 or gmo-eggs > 0) ] [
-    ;; If both wild and gmo eggs exist, one is chose randomly 
+    ;; If both wild and GMO eggs exist, one is chose randomly 
     ifelse (wild-eggs > 0 and gmo-eggs > 0) [
       ifelse one-of [ true false ] [
         ;; hatch wild eggs
@@ -213,7 +213,7 @@ to hatch-wild-egg                     ;; Patch procedure
       sprout-females 1 [
         set color pink                ;; Color pink to indicate wild (non GMO), fertile female
         set compatibility random 10   ;; Random compatibility number between 0 and 9
-        ;; Life span will be a random number between 3 and 10 and a random multiplier btween 2 and 5
+        ;; Life span will be a random number between 3 and 10 and a random multiplier between 2 and 5
         ;; This represents the fact that female mosquitoes can live up to 5 times longer than males
         set life-time (3 + random 8) * (2 + random 4)   
         set pregnant? false           ;; Female specific variables, indicates non GMO
@@ -244,8 +244,8 @@ to hatch-gmo-egg                      ;; Patch procedure
       sprout-gmo-male
     ]
   ]
-  set gmo-eggs gmo-eggs - 1           ;; Decrement gmo egg counter for this patch
-  set total-gmo-eggs total-gmo-eggs - 1  ;; Decrement global total gmo egg counter
+  set gmo-eggs gmo-eggs - 1           ;; Decrement GMO egg counter for this patch
+  set total-gmo-eggs total-gmo-eggs - 1  ;; Decrement global total GMO egg counter
 end
 
 to sprout-gmo-male                    ;; Patch procedure
@@ -255,7 +255,7 @@ to sprout-gmo-male                    ;; Patch procedure
   set gmo? true                       ;; Male specific variables, indicates GMO 
 end
 
-to find-mate                          ;; Female breed turtle prodecure
+to find-mate                          ;; Female breed turtle procedure
   if color = pink and preg-count > 0 [   ;; Double check only fertile female
     ;; Randomly select a male with in a radius of 3 
     let mate min-one-of males in-radius 3 [distance myself]
@@ -269,20 +269,20 @@ to find-mate                          ;; Female breed turtle prodecure
   ]
 end
 
-to fertilize [gmo-flag?]              ;; Female breed turtle prodecure
+to fertilize [gmo-flag?]              ;; Female breed turtle procedure
   ;; This procedure fertilizes the female given the gmo? flag parameter
   set pregnant? true                  ;; Flag indicates this female is now pregnant
   set rest-count 5                    ;; Females must rest at least 5 ticks between pregnancies 
   set preg-count preg-count - 1       ;; Decrement pregnancy counter
   ifelse gmo-flag? [                  ;; If fertilized by a GMO male
-    set color green                   ;; Color green to identify carrying gmo eggs
+    set color green                   ;; Color green to identify carrying GMO eggs
   ]
   [
     set color violet                  ;; Color violet to identify carrying wild eggs
   ]  
 end
 
-to find-water-to-lay-eggs             ;; Female breed turtle prodecure
+to find-water-to-lay-eggs             ;; Female breed turtle procedure
   if pregnant? [                      ;; Double check only pregnant female
     find-water                        ;; Look for water patch
     ;; Error handler against no patch getting selected
@@ -307,14 +307,14 @@ to find-water-to-lay-eggs             ;; Female breed turtle prodecure
   ]
 end
 
-to find-water                         ;; Female breed turtle prodecure
+to find-water                         ;; Female breed turtle procedure
   ;; Look for water patches with in a 180 degree view, distance of 10, and colored cyan
   let targets (patches in-cone 10 180 ) with [pcolor = cyan] 
   ;; Choose the closest water patch and set the female member variable 
   set target min-one-of targets [ distance myself ] 
 end
 
-to lay-eggs                           ;; Female breed turtle prodecure
+to lay-eggs                           ;; Female breed turtle procedure
   ;; This procedure lays random number of eggs (0 to 299), either wild (non GMO) or 
   ;; GMO depending on which type of male she mated 
   let new-eggs random 300
@@ -324,27 +324,27 @@ to lay-eggs                           ;; Female breed turtle prodecure
   ]
   if color = green [                  ;; Lay GMO eggs on current patch
     set gmo-eggs gmo-eggs + new-eggs
-    set total-gmo-eggs total-gmo-eggs + new-eggs  ;; Update global total gmo egg counter
+    set total-gmo-eggs total-gmo-eggs + new-eggs  ;; Update global total GMO egg counter
   ]
-  set pregnant? false                 ;; Reset pregnancy flag to flase
+  set pregnant? false                 ;; Reset pregnancy flag to false
   set color pink                      ;; Reset color to pink to indicate fertile
   set rest-count 0                    ;; Reset rest counter to 0
 end
 
-to mingle                             ;; Female and male breed turtle prodecure
+to mingle                             ;; Female and male breed turtle procedure
   right flutter-amount 45             ;; Turn right random amount
   left flutter-amount 45              ;; Turn left random amount
   forward 1                           ;; Move forward 1
 end
 
-to-report flutter-amount [limit]      ;; Female and male breed turtle prodecure
+to-report flutter-amount [limit]      ;; Female and male breed turtle procedure
   ;; This procedure takes a number as an input and returns a random value between
   ;; (+1 * input value) and (-1 * input value).
   ;; It is used to add a random flutter to the mosquito's movements
   report random-float (2 * limit) - limit
 end
 
-to advance-life                       ;; Female and male breed turtle prodecure
+to advance-life                       ;; Female and male breed turtle procedure
   set life-time life-time - 1         ;; Decrement life counter
   if life-time < 0 [ die ]            ;; If life expired, turtle die
 end
