@@ -48,7 +48,7 @@ globals [
 ;;; Setup ;;;
 ;;;;;;;;;;;;;
 
-to setup
+to setup                              ;; Observer procedure
   clear-all                           ;; Initialize environment by clearing all agents   
   reset-ticks                         ;; Reset tick count to 0
   set total-wild-eggs 0               ;; Initialize global total wild eggs counter to 0
@@ -59,7 +59,7 @@ to setup
   setup-deployments                   ;; Setup initial gmo release locations 
 end
 
-to set-default-shapes                 
+to set-default-shapes                 ;; Turtle procedure
   ;; Define shapes to represent each turtle breed
   set-default-shape females "butterfly"  
   set-default-shape males "butterfly"
@@ -115,13 +115,13 @@ end
 ;;; Go ;;;
 ;;;;;;;;;;  
 
-to go                                 ;; Forever button
+to go                                 ;; Observer procedure, forever button
   if (total-wild-eggs = 0 and total-gmo-eggs = 0 and count females = 0 and count males = 0) [
     stop                              ;; Stop simulation when there are no more mosquitoes and eggs
   ]
   
-  gmo-release-location
-  hatch-eggs
+  gmo-release-location                ;; Monitor for deployment location movements 
+  hatch-eggs                          ;; Hatch eggs, 1 per patch (where applicable)
   
   ask females [ 
     if not pregnant? [ find-mate ]    ;; Female mosquitoes look for a male mate
@@ -137,7 +137,7 @@ to go                                 ;; Forever button
   tick                                ;; Advance ticks
 end
 
-to release-gmo                        ;; Button 
+to release-gmo                        ;; Observer procedure, Button 
   ;; This button triggered procedure creates n-number of GMO male mosquitoes at the patch where each deployment 
   ;; box is positioned, where n is the gmo-release-per-deployment set from slider in interface. This runs every 
   ;; the button is pressed
