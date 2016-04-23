@@ -350,9 +350,9 @@ to advance-life                       ;; Female and male breed turtle procedure
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-227
+230
 10
-770
+773
 574
 20
 20
@@ -377,10 +377,10 @@ ticks
 30.0
 
 BUTTON
-12
-112
-82
-145
+8
+133
+78
+166
 SETUP
 setup
 NIL
@@ -394,10 +394,10 @@ NIL
 1
 
 BUTTON
-91
-112
-154
-145
+87
+133
+150
+166
 GO
 go
 T
@@ -411,10 +411,10 @@ NIL
 1
 
 MONITOR
-13
-325
-98
-370
+9
+346
+94
+391
 Wild Eggs
 total-wild-eggs
 17
@@ -422,10 +422,10 @@ total-wild-eggs
 11
 
 MONITOR
-106
-380
-191
-425
+102
+401
+187
+446
 GMO Infected
 count males with [color = red] + count females with [color = green]
 17
@@ -433,10 +433,10 @@ count males with [color = red] + count females with [color = green]
 11
 
 SLIDER
-12
-72
-187
-105
+8
+93
+183
+126
 initial-release-locations
 initial-release-locations
 0
@@ -448,20 +448,20 @@ NIL
 HORIZONTAL
 
 TEXTBOX
-31
 10
-181
-66
-Set Number of Deployments then SETUP and GO,\nClick and drag red boxes to move deployment location.\n
-11
+10
+228
+84
+First, set initial-deployment-locations (the number of GMO release sites). Then SETUP and GO. While running, \ndrag red boxes to move deployment locations.\n
+12
 0.0
 1
 
 SLIDER
-13
-239
-191
-272
+9
+260
+187
+293
 wild-survival-rate
 wild-survival-rate
 0
@@ -473,10 +473,10 @@ wild-survival-rate
 HORIZONTAL
 
 SLIDER
-13
-281
-192
-314
+9
+302
+188
+335
 gmo-survival-rate
 gmo-survival-rate
 0
@@ -488,10 +488,10 @@ gmo-survival-rate
 HORIZONTAL
 
 MONITOR
-106
-325
-190
-370
+102
+346
+186
+391
 GMO Eggs
 total-gmo-eggs
 17
@@ -499,10 +499,10 @@ total-gmo-eggs
 11
 
 MONITOR
-13
-379
-98
-424
+9
+400
+94
+445
 Uninfected
 count males with [color = blue]\n+ count females with [color = pink]\n+ count females with [color = violet]
 17
@@ -548,10 +548,10 @@ PENS
 "GMO" 1.0 0 -2674135 true "" "plot count males with [color = red] + count females with [color = green]"
 
 SLIDER
-13
-157
-222
-190
+9
+178
+218
+211
 gmo-release-per-deployment
 gmo-release-per-deployment
 10
@@ -563,10 +563,10 @@ NIL
 HORIZONTAL
 
 BUTTON
-13
-196
-124
-229
+9
+217
+120
+250
 Release GMO
 release-gmo
 NIL
