@@ -512,8 +512,8 @@ count males with [color = blue]\n+ count females with [color = pink]\n+ count fe
 PLOT
 782
 11
-982
-161
+1172
+288
 Eggs
 NIL
 NIL
@@ -522,7 +522,7 @@ NIL
 0.0
 10.0
 true
-false
+true
 "" ""
 PENS
 "Wild" 1.0 0 -13345367 true "" "plot total-wild-eggs"
@@ -530,9 +530,9 @@ PENS
 
 PLOT
 782
-175
-982
-325
+297
+1173
+573
 Mosquitoes
 NIL
 NIL
@@ -541,7 +541,7 @@ NIL
 0.0
 10.0
 true
-false
+true
 "" ""
 PENS
 "Wild" 1.0 0 -13345367 true "" "plot count males with [color = blue] + count females with [color = pink] + count females with [color = violet]"
@@ -583,41 +583,42 @@ NIL
 
 
 ## WHAT IS IT?
-This model explores the eradication of Aedes aegypti mosquitoes through the use of genetically modified (GMO) male mosquitoes. The Aedes aegypti has turned to a significant public health threat. It is a vector of several for transmitting ZIKA and other tropical fevers. Conventional control methods have failed to control the population of mosquitoes so far. Novel genetics-based strategies offer a promising alternative or aid towards efficient control of this mosquito.
-Current genetics-based strategies have two different methods, Bi-sex RIDL and fs-RIDL (female specific). Bi-sex RIDL will cause that both male and female offspring die before adulthood. This method needs to continuously release the GMO mosquitoes to the wild. It could significantly reduce the population but hard to eradicate the mosquitoes.
-fs-RIDL (female specific) targets on the female offspring ensuring they fail to survive until adulthood. Meanwhile, male offspring will grow up with the lethal gene and continue to mate with other wild female. In the circumstances, modified gene are spread out automatically. 
-This model will focus on the fs-RIDL method. The target of this model is to help us choose the ideal quantity and locations for releasing GMO mosquitoes and provide the most effective results for the practice.
 
-(a general understanding of what the model is trying to show or explain)
-•	Show how introduction of genetically modified mosquitoes can reduce desease carrying mosquiteos in the wild. 
-•	Health officials need to find the optimal locations for realeasing the GMO mosquiteos
-•	Genetic change is passed down to offspring 
-•	Once a non GMO female is impregnated she will remain infected with the genetic modification. Therefore, subsequient pregnancies will produce GMO eggs regardless if the male is GMO
-•	Genetic females do not survive, therefore only males are reproduced when a GMO male fertilizes and  
+This model explores the eradication of Aedes aegypti mosquitoes through the use of genetically modified (GMO) male mosquitoes. The Aedes aegypti has turned to a significant public health threat. It is a vector of several for transmitting ZIKA and other tropical fevers. Conventional control methods have failed to control the population of mosquitoes so far. Novel genetics-based strategies offer a promising alternative or aid towards efficient control of this mosquito.
+
+Current genetics-based strategies have two different methods, Bi-sex RIDL and fs-RIDL (female specific). Bi-sex RIDL will cause that both male and female offspring die before adulthood. This method requires continuous releases of the GMO mosquitoes to the wild. It could significantly reduce the population but hard to eradicate the mosquitoes. On the other hand fs-RIDL (female specific) targets on the female offspring ensuring they fail to survive until adulthood. Meanwhile, male offspring will grow up with the lethal gene and continue to mate with other wild female. In favorable circumstances, modified gene is spread automatically. 
+
+This model focuses exclusively on the fs-RIDL method. The goal of this model is to help the user choose the ideal locations and quantity of GMO mosquitoes to release while providing the most effective results for the practice.
 
 ## HOW IT WORKS
 
-(what rules the agents use to create the overall behavior of the model)
-* Mosquitoes hatch from eggs in bodies of water 
-* Once hatched, they attempt to mate
-* successful mating requires a an non pregnant, fertile female and a male with in a radius of 3 units of the female. 
-* There is a compatibility variable (0-9) that must match for the female and male to mate successfully. This represents the variable frequency used for mosquitoes to find a mate. 
+Mosquitoes hatch from eggs in bodies of water represented by cyan colored patches. Once hatched, the adult mosquitoes attempt to mate with compatible mosquitoes of the opposite sex. Genetically modified (GMO) male mosquitoes are released by the user who controls release locations, quantities, and number of releases. The mosquito agents fly around in the open, unbound world, interacting with others, testing compatibility, and attempting to mate. 
 
+Successful mating requires a non-pregnant, fertile female and a male with in a radius of 3 units of the female. There is a compatibility variable (0-9) that must match for the female and male to mate successfully. This represents the variable frequency used for mosquitoes to find a mate. Once a suitable mate is found, the fertilized female seeks out the nearest water patch within her field of view (180 degree, 10 distance). After waiting a rest period of 5 ticks, she lays 0 to 300 eggs. The eggs laid are of type wild (non-GMO) or GMO depending on the genetic make up of her male partner. Females can get pregnant a random number of times (1 - 3). After eggs have been laid, the female resumes seeking a mate. 
+
+Male mosquitoes have a life span, randomly set, ranging from 3 to 10 ticks. The life span of females is also a random number between 3 and 10 but with a random multiplier between 2 and 5. This represents the fact that female mosquitoes can live up to 5 times longer than males.
+
+On each tick each water patch, if applicable, hatches 1 egg. If both wild (non-GMO) and GMO eggs exist on said patch, one is chosen at random. A user controlled survival rate for both wild (non-GMO) and GMO determines the odds that the egg will successfully hatch. Since females produced from GMO eggs do not survive to adulthood, only GMO males are produced. The new generations of mosquitoes then proceed to seek mates, thus continuing the cycle.
 
 ## HOW TO USE IT
 
-(how to use the model, including a description of each of the items in the Interface tab)
-•	Set the initial-release-locations 
-•	Setup
-•	Go
-•	Position the release locations for the genetically modified mosquitoes by dragging each red box using the mouse in the environment 
-•	Set the gmo-release-per-deployment
-•	Once release is setup, press the Release GMO button. This can be pressed any number of times. Each press will release the set number of GMO mosquitoes from the current locations. Locations can be changed through out the simulation run
-•	Survival rate of wild (non GMO) mosquitoes
-•	Survival rate of GMO mosquitoes
-•	counters
-•	plots 
-•	
+Prior to Setup, the initial release locations should be set using the initial-release-locations slider. This sets the number of GMO deployment locations ranging from 0 to 10. These deployment locations are represented by red boxes in the environment. 
+
+Next simulation initialization is invoked using the SETUP button. This creates the aforementioned deployment locations as well as three bodies of water represented by cyan colored patches. With in these patches are an initial random (0-49) amount of wild (non-GMO) eggs. 
+
+To start the simulation, the GO button is pressed. This button has the forever option selected to keep the simulation running continuously until subsequent pressing of the GO button. Once running, eggs will hatch producing adult mosquitoes. These mosquitoes will attempt to reproduce as detailed in the previous sections.
+
+While the simulation is running the user can position the release locations for the genetically modified mosquitoes by dragging each red box using the mouse to place them anywhere in the environment.  
+
+The number of GMO male mosquitoes to be released per location is set using the gmo-release-per-deployment slider, ranging from 0 to 100. Note, this is per location so multiply this number by the total number of locations to get the total number of GMO males that will be deployed each time the Release GMO button is pressed. 
+
+Once release settings are configured, press the Release GMO button. This can be pressed any number of times. Each press will release the set number of GMO mosquitoes from the current locations. Locations and gmo-release-per-deployment can be changed through out the simulation run.
+
+Survival rate of wild (non GMO) and GMO mosquitoes are controlled by the wild-survival-rate and gmo-survival-rate respectively. This is the success rate that a hatched egg will produce an adult mosquito. This represents the reality that not all eggs laid result in adult mosquitoes that are able to reproduce in their own rite.
+
+On the bottom left side you will find several counters display the total tally of wild (non-GMO) egg, GMO eggs, uninfected adult mosquitoes, and adult mosquitoes that have been infected with the mutated gene.
+
+On the right side there are two plots that historically track the eggs and mosquito populations. The plot titled Eggs plots wild (non-GMO) egg in blue and GMO eggs in red. The plot titled Mosquitoes plots wild (non-GMO) mosquitoes in blue and GMO mosquitoes in red.
 
 ## THINGS TO NOTICE
 
