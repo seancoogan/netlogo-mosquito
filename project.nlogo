@@ -583,6 +583,10 @@ NIL
 
 
 ## WHAT IS IT?
+This model explores the eradication of Aedes aegypti mosquitoes through the use of genetically modified (GMO) male mosquitoes. The Aedes aegypti has turned to a significant public health threat. It is a vector of several for transmitting ZIKA and other tropical fevers. Conventional control methods have failed to control the population of mosquitoes so far. Novel genetics-based strategies offer a promising alternative or aid towards efficient control of this mosquito.
+Current genetics-based strategies have two different methods, Bi-sex RIDL and fs-RIDL (female specific). Bi-sex RIDL will cause that both male and female offspring die before adulthood. This method needs to continuously release the GMO mosquitoes to the wild. It could significantly reduce the population but hard to eradicate the mosquitoes.
+fs-RIDL (female specific) targets on the female offspring ensuring they fail to survive until adulthood. Meanwhile, male offspring will grow up with the lethal gene and continue to mate with other wild female. In the circumstances, modified gene are spread out automatically. 
+This model will focus on the fs-RIDL method. The target of this model is to help us choose the ideal quantity and locations for releasing GMO mosquitoes and provide the most effective results for the practice.
 
 (a general understanding of what the model is trying to show or explain)
 •	Show how introduction of genetically modified mosquitoes can reduce desease carrying mosquiteos in the wild. 
@@ -619,13 +623,26 @@ NIL
 
 (suggested things for the user to notice while running the model)
 
+If the survival rate of GMO mosquitoes is higher than the survival rate of wild (non GMO) mosquitoes, the extinction will happen very fast. If GMO mosquitoes and wild (non GMO) mosquitoes have the same survival rate, with the same release number, it will take a much longer time to generate a complete eradication. In a wild environment, the survival rate of wild mosquitoes is about 20%.
+Changing the position of deployment points, such as put them together, or put them far from each other, would not significantly affect the result. However, putting deployment points near the water could accelerate the eradication time, especially when the number of deployment points is low.
+
+
 ## THINGS TO TRY
 
 (suggested things for the user to try to do (move sliders, switches, etc.) with the model)
 
+Try different values for the INITIAL-RELEASE-LOCATIONS, GMO-REALEASE-PER-DEPLOYMENT, WILD-SURVIVAL-RATE, and GMO-SURVIVAL-RATE sliders. How do they affect the number of eggs and number of mosquitoes?
+Try to drag the DEPLOYMENT POINT. Does it affect the eradication process?
+
+
 ## EXTENDING THE MODEL
 
 (suggested things to add or change in the Code tab to make the model more complicated, detailed, accurate, etc.)
+
+There are a number of ways to alter the model, so it will make the model closer to reality. Some will require new elements to be coded in or existing behaviors to be changed. 
+•	Add hatch time
+•	Add agent predation behavior. In reality, female mosquitoes need feeding on blood, which they need to mature their eggs. This feature embeds a full life cycle in the model. 
+
 
 ## NETLOGO FEATURES
 
