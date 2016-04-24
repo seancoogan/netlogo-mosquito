@@ -647,18 +647,23 @@ There are a number of ways to alter the model, so it will make the model closer 
 
 ## NETLOGO FEATURES
 
-(interesting or unusual features of NetLogo that the model uses, particularly in the Code tab; or where workarounds were needed for missing features)
+The code demonstrates many examples of sprouting turtles from a patch.
+
+The code also demonstrates the use of the watch, subject, and reset-perspective primitives in conjunction with mouse-down and mouse coordinates to automatically pause model and allow user to select and drag a turtle.
+
+The model shows how to leverage the in-cone reporter to create a field of vision then uses max-one-of and face to find the closest water patch. 
+
 
 ## RELATED MODELS
 
-(models in the NetLogo Models Library and elsewhere which are of related interest)
-moths - flutter
-line of sight - 
-mouse drag one model – mouse interface interaction
+Ants
+Moths
+Line of sight 
+Mouse drag one example
+
 
 ## CREDITS AND REFERENCES
 
-(a reference to the model's URL on the web if it has one, as well as any other necessary credits, citations, and links)
 https://github.com/seancoogan/netlogo-mosquito
 @#$#@#$#@
 default
