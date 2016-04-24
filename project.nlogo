@@ -622,19 +622,18 @@ On the right side there are two plots that historically track the eggs and mosqu
 
 ## THINGS TO NOTICE
 
-(suggested things for the user to notice while running the model)
-
 If the survival rate of GMO mosquitoes is higher than the survival rate of wild (non GMO) mosquitoes, the extinction will happen very fast. If GMO mosquitoes and wild (non GMO) mosquitoes have the same survival rate, with the same release number, it will take a much longer time to generate a complete eradication. In a wild environment, the survival rate of wild mosquitoes is about 20%.
+
 Changing the position of deployment points, such as put them together, or put them far from each other, would not significantly affect the result. However, putting deployment points near the water could accelerate the eradication time, especially when the number of deployment points is low.
 
 
 ## THINGS TO TRY
 
-(suggested things for the user to try to do (move sliders, switches, etc.) with the model)
-
 Try different values for the INITIAL-RELEASE-LOCATIONS, GMO-REALEASE-PER-DEPLOYMENT, WILD-SURVIVAL-RATE, and GMO-SURVIVAL-RATE sliders. How do they affect the number of eggs and number of mosquitoes?
+
 Try to drag the DEPLOYMENT POINT. Does it affect the eradication process?
 
+Is there a significant change in results when pressing the Release GMO button multiple time to simulate multiple deployments?
 
 ## EXTENDING THE MODEL
 
