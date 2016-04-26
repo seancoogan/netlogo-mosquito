@@ -637,11 +637,17 @@ Is there a significant change in results when pressing the Release GMO button mu
 
 ## EXTENDING THE MODEL
 
-(suggested things to add or change in the Code tab to make the model more complicated, detailed, accurate, etc.)
-
 There are a number of ways to alter the model, so it will make the model closer to reality. Some will require new elements to be coded in or existing behaviors to be changed. 
-•	Add hatch time
-•	Add agent predation behavior. In reality, female mosquitoes need feeding on blood, which they need to mature their eggs. This feature embeds a full life cycle in the model. 
+
+Add more user control of different species of mosquitoes. This somewhat implied by the compatibility variable but could be expanded upon.
+
+Add hatch time to closer resemble the developmental stages of the mosquito, from egg to adulthood. 
+
+Add agent predation behavior. In reality, female mosquitoes need feeding on blood, which they need to mature their eggs. This feature embeds a full life cycle in the model. This could incorporate additional factors that decrease mosquito populations such as bats and spray treatments.
+
+Add and track a variety of diseases such as Zika virus, West Nile Virus, Malaria, and Dengue Fever.
+
+Modified layouts including building structures and different water sources to closer resemble a target environment of study.
 
 
 ## NETLOGO FEATURES
