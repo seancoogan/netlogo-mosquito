@@ -156,7 +156,8 @@ to release-gmo-males [ num ]          ;; Patch procedure
 end
 
 to gmo-release-location               ;; Deployment breed turtle procedure
-                                      ;; While Go procedure is running, this procedure monitors if user mouse drags a deployment turtle
+                                      ;; While Go procedure is running, this procedure 
+                                      ;; monitors if user mouse drags a deployment turtle
   if mouse-down? [
     let candidate min-one-of deployments [distancexy mouse-xcor mouse-ycor]
     if [distancexy mouse-xcor mouse-ycor] of candidate < 1 [
